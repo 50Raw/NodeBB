@@ -21,7 +21,7 @@ dashboardController.get = async function (req, res) {
 		getNotices(),
 		getLatestVersion(),
 		getLastRestart(),
-		user.isAdministrator(),
+		user.isAdministrator(req.uid),
 	]);
 	const version = nconf.get('version');
 
@@ -67,10 +67,9 @@ async function getNotices() {
 
 async function getLatestVersion() {
 	try {
-		const result = await versions.getLatestVersion();
-		return result;
+		return await versions.getLatestVersion();
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version', err);
+		winston.error('[acp] Failed to fetch latest version', err.stack);
 	}
 	return null;
 }
